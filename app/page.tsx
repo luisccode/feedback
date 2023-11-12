@@ -1,7 +1,13 @@
+"use client";
+import { Header } from "@/ui/core";
+import { FeedbackForm } from "@/ui/templates";
+
 export default function Feedback() {
   return (
-    <main>
-      <h1>Feedback page</h1>
-    </main>
+    <>
+      <Header progress={50} />
+
+      <FeedbackForm />
+    </>
   );
 }
