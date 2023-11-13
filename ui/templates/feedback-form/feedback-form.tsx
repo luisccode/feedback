@@ -3,6 +3,7 @@ import { Arrow, Earth } from "@/ui/icons";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
+import toast, { Toaster } from "react-hot-toast";
 import { FormType, feedbackSchema } from "./feedback-schema";
 
 export const FeedbackForm = ({
@@ -18,6 +19,7 @@ export const FeedbackForm = ({
   const {
     register,
     watch,
+    reset,
     formState: { errors },
     handleSubmit,
   } = useForm<FormType>({
@@ -41,11 +43,23 @@ export const FeedbackForm = ({
 
   const onSubmit: SubmitHandler<FormType> = (data) => {
     console.log(data);
+
+    reset();
+    setRoleRating(0);
+    setTeamRating(0);
+
+    toast.success("Feedback submitted successfully!", {
+      icon: "👏",
+      duration: 4000,
+      position: "top-right",
+    });
   };
 
   return (
     <>
-      <main className="w-[90vw] max-w-[650px] mx-auto my-6 ">
+      <Toaster />
+
+      <main className="w-[90vw] max-w-[650px] mx-auto my-6">
         <h4 className="font-bold text-2xl mb-3">Hi John,</h4>
 
         <p className="text-blue-900 text-sm mb-6">
