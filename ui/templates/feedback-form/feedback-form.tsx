@@ -1,21 +1,43 @@
 import { Bubble, Button, Checkbox, StarRating, Textarea } from "@/ui/core";
 import { Arrow, Earth } from "@/ui/icons";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useState } from "react";
+import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { FormType, feedbackSchema } from "./feedback-schema";
 
-export const FeedbackForm = () => {
+export const FeedbackForm = ({
+  progress,
+  setProgress,
+}: {
+  progress: number;
+  setProgress: Dispatch<SetStateAction<number>>;
+}) => {
   const [roleRating, setRoleRating] = useState(0);
   const [teamRating, setTeamRating] = useState(0);
 
   const {
     register,
-    formState: { isSubmitting, errors },
+    watch,
+    formState: { errors },
     handleSubmit,
   } = useForm<FormType>({
     resolver: zodResolver(feedbackSchema),
   });
+
+  const values = watch();
+
+  useEffect(() => {
+    const { comment, extra_comment } = values;
+
+    let progressSum = 0;
+
+    if (roleRating) progressSum += 25;
+    if (teamRating) progressSum += 25;
+    if (comment) progressSum += 25;
+    if (extra_comment) progressSum += 25;
+
+    setProgress(progressSum);
+  }, [values, roleRating, teamRating, setProgress]);
 
   const onSubmit: SubmitHandler<FormType> = (data) => {
     console.log(data);
@@ -109,6 +131,7 @@ export const FeedbackForm = () => {
                 register={register}
                 placeholder="Add a comment"
                 className="mt-3"
+                error={errors.comment?.message}
               />
 
               <Checkbox
@@ -151,11 +174,12 @@ export const FeedbackForm = () => {
                 register={register}
                 placeholder="Express yourself freely and safely. This will always remain anonymous."
                 className="mt-3 placeholder:text-purple-100 text-purple-100"
+                error={errors.extra_comment?.message}
               />
             </Bubble>
           </fieldset>
 
-          <Button className="ml-auto" type="submit">
+          <Button className="ml-auto" type="submit" disabled={progress !== 100}>
             <span className="mr-3">Submit</span>
             <Arrow />
           </Button>

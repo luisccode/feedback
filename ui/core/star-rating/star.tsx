@@ -27,6 +27,7 @@ export const Star = ({ number, rating, onChange }: StarProps) => {
         onClick={(e) => {
           e.preventDefault();
           onChange(number);
+          if (isCurrent) onChange(0);
         }}
       >
         <div className="relative z-20 w-full md:w-[90%] mx-auto">
